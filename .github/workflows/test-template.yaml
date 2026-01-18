@@ -1,0 +1,92 @@
+name: Test Template
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-template:
+    name: Test on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+      - name: Checkout template repo
+        uses: actions/checkout@v6
+
+      - name: Install R
+        uses: r-lib/actions/setup-r@v2
+
+      - name: Install system dependencies (Linux only)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev
+
+      - name: Download Kickstart binary
+        shell: bash
+        run: |
+          VERSION="v0.6.0"
+
+          if [[ "${{ runner.os }}" == "Linux" ]]; then
+            FILE="kickstart-${VERSION}-x86_64-unknown-linux-gnu.tar.gz"
+          elif [[ "${{ runner.os }}" == "macOS" ]]; then
+            FILE="kickstart-${VERSION}-x86_64-apple-darwin.tar.gz"
+          else
+            FILE="kickstart-${VERSION}-x86_64-pc-windows-msvc.zip"
+          fi
+
+          URL="https://github.com/Keats/kickstart/releases/download/${VERSION}/${FILE}"
+          curl -L "$URL" -o kickstart_archive
+
+          if [[ "${{ runner.os }}" == "Windows" ]]; then
+            powershell -Command "Expand-Archive -Path kickstart_archive -DestinationPath ."
+            echo "${{ github.workspace }}" >> $GITHUB_PATH
+          else
+            tar -xzf kickstart_archive
+            chmod +x kickstart
+            echo "${{ github.workspace }}" >> $GITHUB_PATH
+          fi
+
+      - name: Verify Kickstart
+        run: ./kickstart --version
+
+      - name: Make config generator executable
+        shell: bash
+        run: |
+          chmod +x ./generate-config.sh
+
+      - name: Generate JSON configs
+        shell: bash
+        run: |
+          ./generate-config.sh
+
+      - name: Generate test packages
+        shell: bash
+        run: |
+          mkdir -p generated
+          for i in {1..12}; do
+            echo "Rendering pkg$i"
+            ./kickstart render . -i configs/pkg${i}.json -o generated/pkg${i}
+          done
+
+      - name: Install devtools
+        run: |
+          R -q -e "install.packages('devtools', repos='https://cloud.r-project.org')"
+
+      - name: Check all generated packages
+        shell: bash
+        run: |
+          for pkg in generated/*; do
+            echo "Checking $pkg"
+            cd "$pkg"
+            R CMD build .
+            PKG_TAR=$(ls *.tar.gz)
+            R CMD check "$PKG_TAR"
+            cd ../..

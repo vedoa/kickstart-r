@@ -1,0 +1,17 @@
+template:
+  bootstrap: 5
+
+url: {{ repo_url }}
+
+home:
+  title: "{{ package_title }}"
+  description: "{{ package_description }}"
+
+navbar:
+  structure:
+    left: [reference, articles]
+    right: [github]
+  components:
+    github:
+      icon: fab fa-github
+      href: {{ repo_url }}

@@ -1,0 +1,25 @@
+---
+title: "Introduction to {{ package_name }}"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to {{ package_name }}}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r}
+library({{ package_name }})
+```
+
+This vignette gives a quick overview of the package.
+
+```{r}
+hello()
+```

@@ -1,0 +1,27 @@
+stages:
+  - check
+  - pkgdown
+
+variables:
+  R_LIBS_USER: "$CI_PROJECT_DIR/R/library"
+
+check:
+  stage: check
+  image: rocker/r2u:latest
+  script:
+    - R -q -e 'install.packages(c("devtools"), repos = "https://cloud.r-project.org")'
+    - R -q -e 'devtools::install(dependencies = TRUE)'
+    - R CMD check .
+
+pkgdown:
+  stage: pkgdown
+  image: rocker/r2u:latest
+  script:
+    - R -q -e 'install.packages(c("pkgdown"), repos = "https://cloud.r-project.org")'
+    - R -q -e 'pkgdown::build_site()'
+  artifacts:
+    paths:
+      - docs
+  only:
+    - main
+    - master

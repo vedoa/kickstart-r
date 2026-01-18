@@ -1,0 +1,144 @@
+name = "R package"
+description = "A full-featured R package template"
+kickstart_version = 1
+url = "https://github.com/vedoa/kickstart-r"
+follow_symlinks = false
+
+ignore = [
+    "README.md",
+    "LICENSE",
+    ".github\\workflows\\test-template.yaml",
+    ".github/workflows/test-template.yaml",
+    "generate-config.sh",
+]
+
+copy_without_render = [
+    "*.csv",
+]
+
+cleanup = [
+    # Remove data directory if user disables data
+    { name = "has_data", value = false, paths = ["data/"]},
+
+    # Remove ALL tests if test_backend = none
+    { name = "test_backend", value = "none", paths = [
+        "tests/",
+        "inst/tinytest/"
+    ]},
+
+    # Remove tinytest files when using testthat
+    { name = "test_backend", value = "testthat", paths = [
+        "tests/tinytest.R",
+        "inst/tinytest/"
+    ]},
+
+    # Remove testthat files when using tinytest
+    { name = "test_backend", value = "tinytest", paths = [
+        "tests/testthat.R",
+        "tests/testthat/"
+    ]},
+
+    # Remove pkgdown files if disabled
+    { name = "use_pkgdown", value = false, paths = [
+        "_pkgdown.yml",
+        "docs/",
+        ".github/workflows/pkgdown.yaml"
+    ]},
+
+    # Remove vignette directory if disabled
+    { name = "use_vignette", value = false, paths = ["vignettes/"]},
+
+    # CI backend cleanup
+    { name = "ci_backend", value = "none", paths = [
+        ".github/",
+        ".gitlab-ci.yml",
+        "Jenkinsfile"
+    ]},
+    { name = "ci_backend", value = "github", paths = [
+        ".gitlab-ci.yml",
+        "Jenkinsfile"
+    ]},
+    { name = "ci_backend", value = "gitlab", paths = [
+        ".github/",
+        "Jenkinsfile"
+    ]},
+    { name = "ci_backend", value = "jenkins", paths = [
+        ".github/",
+        ".gitlab-ci.yml"
+    ]}
+]
+
+
+[[variables]]
+name = "package_name"
+default = "myPackage"
+prompt = "What is the name of the R package?"
+validation = "^([a-zA-Z][a-zA-Z0-9\\.]+)$"
+
+[[variables]]
+name = "package_title"
+default = "My R Package"
+prompt = "What is the package title?"
+
+[[variables]]
+name = "package_description"
+default = "A short description of the package."
+prompt = "Provide a short description of the package."
+
+[[variables]]
+name = "author_name"
+default = "Your Name"
+prompt = "What is the author's name?"
+
+[[variables]]
+name = "author_email"
+default = "you@example.com"
+prompt = "What is the author's email?"
+validation = "^.+@.+\\..+$"
+
+[[variables]]
+name = "license"
+default = "MIT + file LICENSE"
+prompt = "What license will the package use?"
+
+[[variables]]
+name = "repo_url"
+default = "https://github.com/r-pkg"
+prompt = "What is the repository URL (e.g. GitHub)? Leave empty if none."
+
+[[variables]]
+name = "has_data"
+default = true
+prompt = "Should this package include bundled example data?"
+
+[[variables]]
+name = "test_backend"
+default = "testthat"
+prompt = "Which testing framework do you want to use?"
+choices = ["none", "testthat", "tinytest"]
+
+[[variables]]
+name = "use_pkgdown"
+default = true
+prompt = "Do you want a pkgdown site for the package documentation?"
+
+[[variables]]
+name = "use_vignette"
+default = true
+prompt = "Do you want an example vignette?"
+
+[[variables]]
+name = "ci_backend"
+default = "github"
+prompt = "Which CI backend do you want to use?"
+choices = ["none", "github", "gitlab", "jenkins"]
+
+[[variables]]
+name = "package_slug"
+default = "{{ package_name | snake_case }}"
+derived = true
+
+[[variables]]
+name = "yaml"
+default = "yaml"
+derived = true

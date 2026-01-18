@@ -1,0 +1,15 @@
+Package: {{ package_name }}
+Title: {{ package_title }}
+Version: 0.1.0
+Authors@R:
+    person(given = "{{ author_name }}",
+           email = "{{ author_email }}",
+           role = c("aut", "cre"))
+Description: {{ package_description }}
+License: {{ license }}
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+LazyData: {{ has_data }}
+URL: {{ repo_url }}
+BugReports: {{ repo_url }}/issues

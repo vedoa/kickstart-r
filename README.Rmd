@@ -1,0 +1,83 @@
+
+---
+title: "{{ package_title }}"
+author: "{{ author_name }}"
+output: html_document
+---
+
+# {{ package_name }}
+
+{{ package_title }}
+
+{{ package_description }}
+
+## Installation
+
+After generation, you can build and install the package with standard R tooling, for example:
+
+```r
+install.packages("devtools")
+devtools::document()
+devtools::install()
+```
+
+{% if has_data %}
+## Included data
+
+This package includes example data in the `data/` directory.
+{% endif %}
+
+{% if test_backend == "testthat" %}
+## Testing with testthat
+
+This package is configured to use testthat. You can run the tests with:
+
+```r
+devtools::test()
+```
+{% endif %}
+
+{% if test_backend == "tinytest" %}
+## Testing with tinytest
+
+This package is configured to use tinytest. You can run the tests with:
+
+```r
+tinytest::test_all()
+```
+{% endif %}
+
+{% if use_pkgdown %}
+## Documentation site
+
+A basic pkgdown configuration is included. After installing the package, you can build the site with:
+
+```r
+pkgdown::build_site()
+```
+{% endif %}
+
+{% if use_vignette %}
+## Vignette
+
+An introductory vignette is included in `vignettes/intro.Rmd`. You can build and view vignettes with:
+
+```r
+devtools::build_vignettes()
+browseVignettes("{{ package_name }}")
+```
+{% endif %}
+
+{% if ci_backend != "none" %}
+## Continuous integration
+
+This package includes configuration for {{ ci_backend }} to run R CMD check on pushes and pull requests.
+{% endif %}
+
+## Example
+
+```r
+library({{ package_name }})
+hello()
+```
+
