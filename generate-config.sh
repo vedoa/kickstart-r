@@ -1,17 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Directory for generated JSON files
 CONFIG_DIR="configs"
 mkdir -p "$CONFIG_DIR"
 
-# Function to write a JSON config file
 write_config() {
   local file="$1"
   local test_backend="$2"
   local use_pkgdown="$3"
   local use_vignette="$4"
   local has_data="$5"
+  local ci_backend="$6"
 
   cat > "$file" <<EOF
 {
@@ -19,32 +18,37 @@ write_config() {
   "use_pkgdown": $use_pkgdown,
   "use_vignette": $use_vignette,
   "has_data": $has_data,
-  "user": "$USER",
-  "home": "$HOME",
-  "bin": "$HOME/bin",
-  "path": "$PATH"
+  "ci_backend": "$ci_backend",
+  "package_name": "mypkg",
+  "package_title": "My Package",
+  "package_description": "Example",
+  "author_name": "Test User",
+  "author_email": "test@example.com",
+  "license": "MIT + file LICENSE",
+  "repo_url": "https://example.com"
 }
 EOF
 }
 
 echo "Generating Kickstart config files in $CONFIG_DIR"
 
-# --- Testthat combinations ---
-write_config "$CONFIG_DIR/pkg1.json"  "testthat" true  true  true
-write_config "$CONFIG_DIR/pkg2.json"  "testthat" false true  true
-write_config "$CONFIG_DIR/pkg3.json"  "testthat" true  false true
-write_config "$CONFIG_DIR/pkg4.json"  "testthat" false false false
+i=1
+for test_backend in none testthat tinytest; do
+  for use_pkgdown in true false; do
+    for use_vignette in true false; do
+      for has_data in true false; do
+        for ci_backend in none github gitlab jenkins; do
 
-# --- Tinytest combinations ---
-write_config "$CONFIG_DIR/pkg5.json"  "tinytest" true  true  true
-write_config "$CONFIG_DIR/pkg6.json"  "tinytest" false true  false
-write_config "$CONFIG_DIR/pkg7.json"  "tinytest" true  false false
-write_config "$CONFIG_DIR/pkg8.json"  "tinytest" false false true
+          file="$CONFIG_DIR/pkg${i}.json"
+          write_config "$file" "$test_backend" "$use_pkgdown" "$use_vignette" "$has_data" "$ci_backend"
 
-# --- No tests combinations ---
-write_config "$CONFIG_DIR/pkg9.json"  "none" true  true  true
-write_config "$CONFIG_DIR/pkg10.json" "none" false true  false
-write_config "$CONFIG_DIR/pkg11.json" "none" true  false false
-write_config "$CONFIG_DIR/pkg12.json" "none" false false true
+          echo "Generated $file"
+          i=$((i+1))
 
-echo "Done."
+        done
+      done
+    done
+  done
+done
+
+echo "Done. Total configs: $((i-1))"
