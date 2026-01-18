@@ -43,10 +43,15 @@ jobs:
           fi
 
           URL="https://github.com/Keats/kickstart/releases/download/${VERSION}/${FILE}"
-          curl -L "$URL" -o kickstart_archive
+          
+          if [[ "${{ runner.os }}" == "Windows" ]]; then
+            curl -L "$URL" -o kickstart_archive.zip
+          else
+            curl -L "$URL" -o kickstart_archive
+          fi
 
           if [[ "${{ runner.os }}" == "Windows" ]]; then
-            powershell -Command "Expand-Archive -Path kickstart_archive -DestinationPath ."
+            powershell -Command "Expand-Archive -Path kickstart_archive.zip -DestinationPath ."
             echo "${{ github.workspace }}" >> $GITHUB_PATH
           else
             tar -xzf kickstart_archive
@@ -73,12 +78,8 @@ jobs:
           mkdir -p generated
           for i in {1..12}; do
             echo "Rendering pkg$i"
-            ./kickstart render . -i configs/pkg${i}.json -o generated/pkg${i}
+            ./kickstart . -i configs/pkg${i}.json -o generated/pkg${i}
           done
-
-      - name: Install devtools
-        run: |
-          R -q -e "install.packages('devtools', repos='https://cloud.r-project.org')"
 
       - name: Check all generated packages
         shell: bash
