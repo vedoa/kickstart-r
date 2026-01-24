@@ -45,6 +45,7 @@ for test_backend in none testthat tinytest; do
 
           # generate configuration
           echo "Generated $file"
+          cat "$file" 
   
           # generate package
           ./kickstart . -i "$file" -o "$OUTPUT_DIR/pkg${i}"
