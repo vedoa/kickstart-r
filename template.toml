@@ -10,6 +10,8 @@ ignore = [
     ".github\\workflows\\test-template.yaml",
     ".github/workflows/test-template.yaml",
     "generate-config-and-test.sh",
+    "kickstart",
+    "kickstart.exe"
 ]
 
 copy_without_render = [
