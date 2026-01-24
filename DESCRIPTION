@@ -13,3 +13,7 @@ RoxygenNote: 7.3.2
 LazyData: {{ has_data }}
 URL: {{ repo_url }}
 BugReports: {{ repo_url }}/issues
+{%- if test_backend != "none" -%}
+Suggests:
+    {{ test_backend }}
+{%- endif -%}
