@@ -42,7 +42,25 @@ for test_backend in none testthat tinytest; do
           file="$CONFIG_DIR/pkg${i}.json"
           write_config "$file" "$test_backend" "$use_pkgdown" "$use_vignette" "$has_data" "$ci_backend"
 
+          # generate configuration
           echo "Generated $file"
+  
+          # generate package
+          ./kickstart . -i "$file" -o "$OUTPUT_DIR/pkg${i}"
+
+          # build and check immediately
+          pkg="$OUTPUT_DIR/pkg${i}"
+          echo "Checking $pkg"
+          cd "$pkg"
+          R CMD build .
+          PKG_TAR=$(ls *.tar.gz)
+          R CMD check "$PKG_TAR"
+          cd ../..
+
+          # delete the folder after check
+          echo "Deleting $pkg"
+          rm -rf "$pkg"
+
           i=$((i+1))
 
         done

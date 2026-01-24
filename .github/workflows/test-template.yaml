@@ -67,27 +67,7 @@ jobs:
         run: |
           chmod +x ./generate-config.sh
 
-      - name: Generate JSON configs
+      - name: Generate JSON configs and test generated package
         shell: bash
         run: |
-          ./generate-config.sh
-
-      - name: Generate test packages
-        shell: bash
-        run: |
-          mkdir -p generated
-          for i in {1..12}; do
-            echo "Rendering pkg$i"
-            ./kickstart . -i configs/pkg${i}.json -o generated/pkg${i}
-          done
-
-      - name: Check all generated packages
-        shell: bash
-        run: |
-          for pkg in generated/*; do
-            echo "Checking $pkg"
-            cd "$pkg"
-            R CMD build .
-            PKG_TAR=$(ls *.tar.gz)
-            R CMD check "$PKG_TAR"
-            cd ../..
+          ./generate-config-and-test.sh

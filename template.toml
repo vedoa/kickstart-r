@@ -9,7 +9,7 @@ ignore = [
     "LICENSE",
     ".github\\workflows\\test-template.yaml",
     ".github/workflows/test-template.yaml",
-    "generate-config.sh",
+    "generate-config-and-test.sh",
 ]
 
 copy_without_render = [
