@@ -49,7 +49,7 @@ for test_backend in none testthat tinytest; do
   
           # generate package
           ./kickstart . -i "$file" -o "$OUTPUT_DIR/pkg${i}"
-
+        
           # build and check immediately
           pkg="$OUTPUT_DIR/pkg${i}"
           echo "Checking $pkg"
