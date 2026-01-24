@@ -35,7 +35,7 @@ jobs:
       - name: Install missing LaTeX packages for Windows
         if: runner.os == 'Windows'
         run: |
-          Rscript -e 'tinytex::tlmgr_install(c("texinfo", "inconsolata", "lm", "times", "helvetic", "courier"))
+          Rscript -e 'tinytex::tlmgr_install(c("texinfo", "inconsolata", "lm", "times", "helvetic", "courier"))'
 
       - name: Download Kickstart binary
         shell: bash
