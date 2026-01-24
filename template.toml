@@ -8,7 +8,7 @@ ignore = [
     ".github/workflows/test-template.yaml",
     ".github\\workflows\\test-template.yaml",
     "generate-config-and-test.sh",
-    "kickstart-download.sh"
+    "kickstart-download.sh",
     "kickstart.exe",
     "kickstart",
     "LICENSE",
