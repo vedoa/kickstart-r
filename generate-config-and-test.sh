@@ -2,7 +2,8 @@
 set -euo pipefail
 
 CONFIG_DIR="configs"
-mkdir -p "$CONFIG_DIR"
+OUTPUT_DIR="generated"
+mkdir -p "$CONFIG_DIR" "$OUTPUT_DIR"
 
 write_config() {
   local file="$1"
