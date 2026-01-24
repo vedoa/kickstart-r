@@ -43,7 +43,6 @@ cleanup = [
     # Remove pkgdown files if disabled
     { name = "use_pkgdown", value = false, paths = [
         "_pkgdown.yml",
-        "docs/",
         ".github/workflows/pkgdown.yaml"
     ]},
 
@@ -69,7 +68,6 @@ cleanup = [
         ".gitlab-ci.yml"
     ]}
 ]
-
 
 [[variables]]
 name = "package_name"
